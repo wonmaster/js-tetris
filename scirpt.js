@@ -32,9 +32,11 @@ const ROWS = 20, COLS = 10, BLOCK_SIZE = 20
 const BOARD = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
 canvas.width = COLS * BLOCK_SIZE;
 canvas.height = ROWS * BLOCK_SIZE;
-ctx.fillStyle = 'lightgrey';
 
+let nextetetro = getNewTetromino();
 let thetetro= getNewTetromino();
+
+let score = 0;
 
 function getNewTetromino() {
     const random = Math.floor(Math.random() * SHAPES.length);
@@ -58,8 +60,36 @@ function draw() {
             ctx.strokeRect((thetetro.pos_x + dx) * BLOCK_SIZE, (thetetro.pos_y + dy) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
     }));
+    drawNextTetromino();
+
 }
 
+
+const nextCanvas = document.getElementById('next-tetro');
+const nextCtx=nextCanvas.getContext('2d');
+nextCanvas.width = 4 * BLOCK_SIZE;
+nextCanvas.height = 4 * BLOCK_SIZE;
+
+
+
+
+function drawNextTetromino() {
+    nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+    
+    const shape = nextetetro.shape;
+    const size = shape.length; 
+
+    const offsetX = Math.floor((4 - shape[0].length) / 2);
+    const offsetY = Math.floor((4 - shape.length) / 2);
+
+    shape.forEach((row, y) => row.forEach((cell, x) => {
+        if (cell) {
+            nextCtx.fillStyle = nextetetro.color;
+            nextCtx.fillRect((x + offsetX) * BLOCK_SIZE, (y + offsetY) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            nextCtx.strokeRect((x + offsetX) * BLOCK_SIZE, (y + offsetY) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        }
+    }));
+}
 
 function checkCollision(shape, x, y) {
     return shape.some((row, dy) => row.some((cell, dx) => {
@@ -81,12 +111,19 @@ function merge() {
 }
 
 function clearRows() {
+    let rowCount = 0;
     for (let y = ROWS - 1; y >= 0; y--) {
         if (BOARD[y].every(cell => cell)) {
             BOARD.splice(y, 1);
             BOARD.unshift(Array(COLS).fill(null));
+            rowCount ++;
         }
     }
+    if (rowCount > 0) {
+        score += rowCount * 10; // 10 points per row
+        document.getElementById('score').innerText = "Score: " + score;
+    }
+
 }
 
 let gameInterval = setInterval(gameLoop, 500);
@@ -109,10 +146,12 @@ function gameLoop() {
     } else {
         merge();
         clearRows();
-        thetetro = getNewTetromino();
+        thetetro = nextetetro;
+        nextetetro = getNewTetromino();
+        
         if (checkCollision(thetetro.shape, thetetro.pos_x, thetetro.pos_y)) {
             clearInterval(gameInterval);
-            alert("Game Over!");
+            alert("Game Over!"+ score);
         }
     }
     draw();
