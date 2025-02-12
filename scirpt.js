@@ -28,7 +28,7 @@ const SHAPES = [
 
 const canvas = document.getElementById('tetris');
 const ctx = canvas.getContext('2d');
-const ROWS = 20, COLS = 10, BLOCK_SIZE = 20
+const ROWS = 25, COLS = 15, BLOCK_SIZE = 25
 const BOARD = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
 canvas.width = COLS * BLOCK_SIZE;
 canvas.height = ROWS * BLOCK_SIZE;
@@ -112,18 +112,23 @@ function merge() {
 
 function clearRows() {
     let rowCount = 0;
-    for (let y = ROWS - 1; y >= 0; y--) {
+    let y = ROWS - 1; 
+
+    while (y >= 0) {
         if (BOARD[y].every(cell => cell)) {
-            BOARD.splice(y, 1);
-            BOARD.unshift(Array(COLS).fill(null));
-            rowCount ++;
+            BOARD.splice(y, 1); 
+            BOARD.unshift(Array(COLS).fill(null)); 
+            rowCount++;
+        
+        } else {
+            y--;
         }
     }
+
     if (rowCount > 0) {
-        score += rowCount * 10; // 10 points per row
+        score += rowCount * 10; 
         document.getElementById('score').innerText = "Score: " + score;
     }
-
 }
 
 let gameInterval = setInterval(gameLoop, 500);
