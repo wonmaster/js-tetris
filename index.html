@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetris</title>
+    <link rel="stylesheet" href="cool.css">
+    
+    
 </head>
 <body>
-        <p id="score">Score: 0</p>
-        <canvas id="tetris"></canvas>
+    <audio id='backgroundsound' loop>
+        <source src="Tetris.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div id="score">Score: 0</div>
+    <button id="start-button">Start Game</button>
+    <button id="stop-button" >Stop Game</button>
+    <div class="game">
         <canvas id="next-tetro"></canvas>
+        <canvas id="tetris"></canvas>
+        
         <script src="scirpt.js"></script>
+    </div>
 </body>
 
 </html>
