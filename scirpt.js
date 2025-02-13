@@ -28,10 +28,32 @@ const SHAPES = [
 
 const canvas = document.getElementById('tetris');
 const ctx = canvas.getContext('2d');
-const ROWS = 25, COLS = 15, BLOCK_SIZE = 25
+const ROWS = 25, COLS = 12, BLOCK_SIZE = 25
 const BOARD = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
 canvas.width = COLS * BLOCK_SIZE;
 canvas.height = ROWS * BLOCK_SIZE;
+canvas.style.border = "1px solid black";
+canvas.style.backgroundColor = "rgba(8, 7, 45, 0.72)";
+
+
+function drawgrid() {
+    
+    ctx.beginPath();
+    
+    for (let x = 0; x <= COLS; x++) {
+        ctx.moveTo(x * BLOCK_SIZE, 0);
+        ctx.lineTo(x * BLOCK_SIZE, ROWS * BLOCK_SIZE);
+    }
+    for (let y = 0; y <= ROWS; y++) {
+        ctx.moveTo(0, y * BLOCK_SIZE);
+        ctx.lineTo(COLS * BLOCK_SIZE, y * BLOCK_SIZE);
+    }
+    
+    ctx.stroke();
+    
+}
+
+
 
 let nextetetro = getNewTetromino();
 let thetetro= getNewTetromino();
@@ -45,7 +67,9 @@ function getNewTetromino() {
 }
 
 function draw() {
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawgrid();
     BOARD.forEach((row, y) => row.forEach((cell, x) => {
         if (cell) {
             ctx.fillStyle = cell;
@@ -67,6 +91,7 @@ function draw() {
 
 const nextCanvas = document.getElementById('next-tetro');
 const nextCtx=nextCanvas.getContext('2d');
+nextCanvas.style.border = "1px solid black";
 nextCanvas.width = 4 * BLOCK_SIZE;
 nextCanvas.height = 4 * BLOCK_SIZE;
 
@@ -123,12 +148,14 @@ function clearRows() {
         } else {
             y--;
         }
+    
     }
 
     if (rowCount > 0) {
-        score += rowCount * 10; 
+        score += rowCount * 120; 
         document.getElementById('score').innerText = "Score: " + score;
     }
+    
 }
 
 let gameInterval = setInterval(gameLoop, 500);
@@ -146,6 +173,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 function gameLoop() {
+    
     if (!checkCollision(thetetro.shape, thetetro.pos_x, thetetro.pos_y + 1)) {
         thetetro.pos_y++;
     } else {
